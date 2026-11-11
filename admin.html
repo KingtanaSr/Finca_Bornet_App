@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+  PANEL PRIVADO DE FINCA BORNET: INVENTARIO EN LENGUAJE NATURAL
+  FINCA BORNET PRIVATE PANEL: NATURAL-LANGUAGE INVENTORY
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Panel | Finca Bornet</title>
+<style>
+  /* Mismos colores del catálogo, sin decoración. / Same colors as the catalog, no decoration. */
+  :root { --cacao: #3A2117; --cacao-soft: #6B4A3A; --mazorca: #E0A526; --hoja: #2E5E3A; --pulpa: #FFFDF8; --linea: #E8E0D6; --error: #A3261B; }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--pulpa); color: var(--cacao); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+  h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+  h2 { font-size: 1.1rem; margin: 1.75rem 0 .5rem; }
+  :focus-visible { outline: 3px solid var(--mazorca); outline-offset: 2px; }
+  label { display: block; font-weight: 600; margin-bottom: .35rem; }
+  input, textarea { width: 100%; font: inherit; border: 1px solid var(--linea); border-radius: 10px; padding: .7rem .9rem; background: #fff; }
+  textarea { min-height: 6rem; resize: vertical; }
+  .ayuda { color: var(--cacao-soft); font-size: .9rem; margin: .35rem 0 .75rem; }
+  .btn { border: 0; border-radius: 999px; padding: .7rem 1.2rem; font: inherit; font-weight: 700; cursor: pointer; margin-top: .75rem; }
+  .btn:disabled { opacity: .5; cursor: wait; }
+  .prim { background: var(--hoja); color: #fff; }
+  .sec { background: none; border: 1px solid var(--cacao); color: var(--cacao); }
+  .msg { margin-top: .75rem; }
+  .msg.error { color: var(--error); }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .3rem; border-bottom: 1px solid var(--linea); }
+  td:last-child, th:last-child { text-align: right; }
+  .cambios { list-style: none; padding: 0; margin: 0; }
+  .cambios li { padding: .6rem .8rem; border: 1px solid var(--linea); border-radius: 10px; margin-bottom: .5rem; background: #fff; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Panel de Finca Bornet</h1>
+
+  <!-- Paso 1: ingresar con el PIN. / Step 1: sign in with the PIN. -->
+  <form id="formPin">
+    <label for="pin">PIN</label>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+    <button class="btn prim" type="submit">Entrar</button>
+    <p class="msg" id="msgPin" role="alert"></p>
+  </form>
+
+  <!-- Paso 2: escribir lo que pasó y confirmar. / Step 2: write what happened and confirm. -->
+  <section id="panel" hidden>
+    <form id="formTexto">
+      <label for="texto">¿Qué pasó hoy?</label>
+      <p class="ayuda">Por ejemplo: «hoy hice 10 tabletas de 70 %» o «vendí 2 pastas a doña María».</p>
+      <textarea id="texto" required maxlength="1000"></textarea>
+      <button class="btn prim" type="submit" id="btnInterpretar">Revisar cambios</button>
+    </form>
+
+    <div id="propuesta" hidden>
+      <h2>Esto es lo que entendí</h2>
+      <ul class="cambios" id="listaCambios"></ul>
+      <button class="btn prim" id="btnGuardar">Guardar cambios</button>
+      <button class="btn sec" id="btnDescartar">Descartar</button>
+    </div>
+    <p class="msg" id="msg" role="alert"></p>
+
+    <h2>Existencias actuales</h2>
+    <table>
+      <thead><tr><th>Producto</th><th>Existencias</th></tr></thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+  // Debe ser la misma URL que en index.html. / Must be the same URL as in index.html.
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwfqijd7O47eVLsBC07vz2oEPIgPsFzw_2p0HJ-FljNt9bpSVJxtkVMzFqJTDm_V2r7/exec';
+
+  const $ = id => document.getElementById(id);
+  let pin = '', productos = [], cambios = [];
+
+  // Llama al backend con el PIN incluido. / Calls the backend with the PIN included.
+  async function api(body) {
+    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ ...body, pin }) });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data;
+  }
+
+  // Muestra la tabla de existencias. / Shows the stock table.
+  function pintarTabla() {
+    $('tabla').innerHTML = '';
+    productos.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td></td><td></td>';
+      tr.cells[0].textContent = `${p.nombre} (${p.presentacion})`;
+      tr.cells[1].textContent = p.existencias;
+      $('tabla').appendChild(tr);
+    });
+  }
+
+  // Describe un cambio en lenguaje sencillo. / Describes a change in plain language.
+  function describir(c) {
+    const p = productos.find(x => x.id === c.producto_id);
+    const nombre = p ? `${p.nombre} (${p.presentacion})` : c.producto_id;
+    const base = c.tipo === 'produccion'
+      ? `Sumar ${c.cantidad} a ${nombre}`
+      : `Venta de ${c.cantidad} de ${nombre}${c.cliente ? ' a ' + c.cliente : ''}`;
+    return base + (c.nota ? `. Nota: ${c.nota}` : '');
+  }
+
+  $('formPin').onsubmit = async e => {
+    e.preventDefault();
+    pin = $('pin').value;
+    $('msgPin').textContent = 'Verificando…';
+    try {
+      productos = (await api({ action: 'login' })).products;
+      $('formPin').hidden = true; $('panel').hidden = false;
+      pintarTabla();
+    } catch (err) {
+      $('msgPin').textContent = err.message === 'PIN incorrecto.' ? 'El PIN no es correcto.' : 'No se pudo conectar. Revise la conexión e intente de nuevo.';
+    }
+  };
+
+  // Pide a la IA que interprete el texto; todavía no se guarda nada.
+  // Asks the AI to interpret the text; nothing is saved yet.
+  $('formTexto').onsubmit = async e => {
+    e.preventDefault();
+    $('btnInterpretar').disabled = true; $('msg').className = 'msg'; $('msg').textContent = 'Revisando…';
+    try {
+      cambios = (await api({ action: 'parse', text: $('texto').value })).changes;
+      $('msg').textContent = '';
+      if (!cambios.length) { $('msg').textContent = 'No encontré productos ni cantidades en el mensaje. Intente escribirlo de otra forma.'; return; }
+      $('listaCambios').innerHTML = '';
+      cambios.forEach(c => { const li = document.createElement('li'); li.textContent = describir(c); $('listaCambios').appendChild(li); });
+      $('propuesta').hidden = false;
+    } catch (err) {
+      $('msg').className = 'msg error'; $('msg').textContent = 'No se pudo revisar: ' + err.message;
+    } finally { $('btnInterpretar').disabled = false; }
+  };
+
+  // Guarda en la hoja solo lo que la persona confirmó. / Saves to the sheet only what the person confirmed.
+  $('btnGuardar').onclick = async () => {
+    $('btnGuardar').disabled = true;
+    try {
+      productos = (await api({ action: 'apply', changes: cambios })).products;
+      pintarTabla();
+      $('propuesta').hidden = true; $('texto').value = '';
+      $('msg').className = 'msg'; $('msg').textContent = 'Cambios guardados.';
+    } catch (err) {
+      $('msg').className = 'msg error'; $('msg').textContent = 'No se guardó nada: ' + err.message;
+    } finally { $('btnGuardar').disabled = false; }
+  };
+
+  $('btnDescartar').onclick = () => { cambios = []; $('propuesta').hidden = true; $('msg').textContent = 'Cambios descartados.'; };
+</script>
+</body>
+</html>
