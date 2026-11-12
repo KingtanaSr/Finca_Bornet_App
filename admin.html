@@ -1,75 +1,158 @@
 <!DOCTYPE html>
 <!--
-  PANEL PRIVADO DE FINCA BORNET: INVENTARIO EN LENGUAJE NATURAL
-  FINCA BORNET PRIVATE PANEL: NATURAL-LANGUAGE INVENTORY
+  PANEL PRIVADO DE FINCA BORNET: INVENTARIO EN LENGUAJE NATURAL (DISEÑO "ENVOLTURA ARTESANAL")
+  FINCA BORNET PRIVATE PANEL: NATURAL-LANGUAGE INVENTORY ("HANDMADE WRAPPER" DESIGN)
 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#3A2117">
 <title>Panel | Finca Bornet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Young+Serif&display=swap" rel="stylesheet">
 <style>
-  /* Mismos colores del catálogo, sin decoración. / Same colors as the catalog, no decoration. */
-  :root { --cacao: #3A2117; --cacao-soft: #6B4A3A; --mazorca: #E0A526; --hoja: #2E5E3A; --pulpa: #FFFDF8; --linea: #E8E0D6; --error: #A3261B; }
+  /* Misma identidad del catálogo, en versión sobria. / Same identity as the catalog, in a plainer version. */
+  :root {
+    --cacao: #3A2117; --cacao-2: #5A3A2C; --mazorca: #E0A526; --hoja: #2E5E3A; --hoja-osc: #234A2D;
+    --morada: #7A2E3B; --pulpa: #FFFDF8; --papel: #F3E9DC; --linea: #E6D9C8;
+    --display: "Young Serif", Georgia, serif;
+    --body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  body { margin: 0; background: var(--pulpa); color: var(--cacao); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 640px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
-  h1 { font-size: 1.5rem; margin: 0 0 1rem; }
-  h2 { font-size: 1.1rem; margin: 1.75rem 0 .5rem; }
-  :focus-visible { outline: 3px solid var(--mazorca); outline-offset: 2px; }
-  label { display: block; font-weight: 600; margin-bottom: .35rem; }
-  input, textarea { width: 100%; font: inherit; border: 1px solid var(--linea); border-radius: 10px; padding: .7rem .9rem; background: #fff; }
-  textarea { min-height: 6rem; resize: vertical; }
-  .ayuda { color: var(--cacao-soft); font-size: .9rem; margin: .35rem 0 .75rem; }
-  .btn { border: 0; border-radius: 999px; padding: .7rem 1.2rem; font: inherit; font-weight: 700; cursor: pointer; margin-top: .75rem; }
-  .btn:disabled { opacity: .5; cursor: wait; }
+  body { margin: 0; background: var(--pulpa); color: var(--cacao); font: 17px/1.55 var(--body); min-height: 100dvh; }
+  button, input, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--cacao); outline-offset: 3px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Encabezado compacto con borde dentado. / Compact header with serrated edge. */
+  header { position: relative; background: var(--cacao); color: var(--pulpa); padding: .9rem 1.25rem; }
+  header::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 8px;
+    background: linear-gradient(135deg, var(--cacao) 50%, transparent 50%) 0 0 / 12px 8px repeat-x,
+                linear-gradient(225deg, var(--cacao) 50%, transparent 50%) 0 0 / 12px 8px repeat-x;
+  }
+  header .wrap { display: flex; align-items: center; gap: .75rem; }
+  header svg { width: 26px; height: auto; flex: none; }
+  header strong { font: 1.35rem/1 var(--display); color: var(--mazorca); font-weight: 400; }
+  header span { margin-left: auto; font-size: .95rem; opacity: .9; }
+  .wrap { width: min(640px, 100%); margin-inline: auto; }
+  main { padding: 2rem 1.25rem 3rem; }
+  h1, h2 { font-family: var(--display); font-weight: 400; }
+  h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 .5rem; }
+  h2 { font-size: 1.3rem; line-height: 1.2; margin: 0 0 .75rem; }
+
+  .tarjeta { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 1.25rem; box-shadow: 0 14px 28px -24px rgb(58 33 23 / .55); }
+  .tarjeta + .tarjeta { margin-top: 1.25rem; }
+
+  /* Inicio de sesión centrado. / Centered sign-in. */
+  .login { min-height: calc(100dvh - 10rem); display: grid; place-items: center; }
+  .login .tarjeta { width: 100%; max-width: 380px; text-align: center; padding: 2rem 1.5rem; }
+  .login svg { width: 44px; height: auto; margin: 0 auto 1rem; display: block; }
+  .login p.sub { color: var(--cacao-2); margin: 0 0 1.25rem; }
+  .login label { text-align: left; }
+  #pin { font-size: 1.5rem; letter-spacing: .3em; text-align: center; }
+
+  label { display: block; font-weight: 700; margin-bottom: .4rem; }
+  input, textarea { width: 100%; border: 2px solid var(--linea); border-radius: 12px; padding: .75rem 1rem; background: #fff; min-height: 52px; }
+  input:focus-visible, textarea:focus-visible { border-color: var(--cacao); outline-offset: 1px; }
+  textarea { min-height: 7.5rem; resize: vertical; }
+  .ayuda { color: var(--cacao-2); margin: 0 0 .75rem; }
+
+  /* Botones con estado de carga. / Buttons with loading state. */
+  .btn { border: 0; border-radius: 999px; min-height: 52px; padding: .7rem 1.4rem; font-weight: 700; cursor: pointer;
+         display: inline-flex; align-items: center; justify-content: center; gap: .6rem; margin-top: 1rem; width: 100%; }
+  @media (min-width: 600px) { .btn { width: auto; } .login .btn { width: 100%; } }
   .prim { background: var(--hoja); color: #fff; }
-  .sec { background: none; border: 1px solid var(--cacao); color: var(--cacao); }
-  .msg { margin-top: .75rem; }
-  .msg.error { color: var(--error); }
-  table { width: 100%; border-collapse: collapse; font-size: .95rem; }
-  th, td { text-align: left; padding: .45rem .3rem; border-bottom: 1px solid var(--linea); }
-  td:last-child, th:last-child { text-align: right; }
-  .cambios { list-style: none; padding: 0; margin: 0; }
-  .cambios li { padding: .6rem .8rem; border: 1px solid var(--linea); border-radius: 10px; margin-bottom: .5rem; background: #fff; }
+  .prim:hover { background: var(--hoja-osc); }
+  .sec { background: #fff; border: 2px solid var(--cacao); color: var(--cacao); }
+  .btn:disabled { cursor: wait; opacity: .75; }
+  .btn.cargando::before {
+    content: ""; width: 18px; height: 18px; border-radius: 50%; border: 3px solid currentColor; border-right-color: transparent; flex: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn.cargando::before { animation: girar .8s linear infinite; }
+    @keyframes girar { to { transform: rotate(360deg); } }
+  }
+  .acciones { display: flex; flex-wrap: wrap; gap: 0 .75rem; }
+
+  .msg { margin: .75rem 0 0; font-weight: 600; }
+  .msg:empty { display: none; }
+  .msg.error { color: var(--morada); }
+  .msg.ok { color: var(--hoja); }
+
+  /* Cambios propuestos con etiqueta de tipo. / Proposed changes with a type tag. */
+  .cambios { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+  .cambios li { display: grid; gap: .35rem; padding: .85rem 1rem; border-radius: 12px; background: var(--papel); border-left: 6px solid var(--hoja); }
+  .cambios li.venta { border-left-color: var(--morada); }
+  .etiqueta { justify-self: start; font-size: .85rem; font-weight: 700; padding: .15rem .65rem; border-radius: 999px; color: #fff; background: var(--hoja); }
+  .venta .etiqueta { background: var(--morada); }
+
+  /* Existencias legibles en celular. / Stock readable on mobile. */
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: .9rem; color: var(--cacao-2); font-weight: 700; padding: 0 .25rem .5rem; border-bottom: 2px solid var(--linea); }
+  td { padding: .8rem .25rem; border-bottom: 1px solid var(--linea); vertical-align: middle; text-wrap: pretty; }
+  th:last-child, td:last-child { text-align: right; white-space: nowrap; }
+  td .pres { display: block; color: var(--cacao-2); font-size: .9rem; }
+  td.num { font: 1.35rem/1 var(--display); }
+  tr.cero td { background: #F7EBEC; }
+  tr.cero td:first-child { box-shadow: inset 5px 0 0 var(--morada); padding-left: .9rem; }
+  tr.cero td.num { color: var(--morada); }
+  .agotado { display: block; font: 700 .8rem/1.2 var(--body); color: var(--morada); margin-top: .2rem; }
 </style>
 </head>
 <body>
-<main>
-  <h1>Panel de Finca Bornet</h1>
+<header>
+  <div class="wrap">
+    <svg viewBox="0 0 56 72" aria-hidden="true"><path d="M28 2C13 10 6 26 8 42c2 15 10 26 20 28 10-2 18-13 20-28 2-16-5-32-20-40z" fill="#E0A526"/></svg>
+    <strong>Finca Bornet</strong>
+    <span>Panel de la familia</span>
+  </div>
+</header>
 
+<main class="wrap">
   <!-- Paso 1: ingresar con el PIN. / Step 1: sign in with the PIN. -->
-  <form id="formPin">
-    <label for="pin">PIN</label>
-    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" required>
-    <button class="btn prim" type="submit">Entrar</button>
-    <p class="msg" id="msgPin" role="alert"></p>
-  </form>
+  <div class="login" id="login">
+    <form class="tarjeta" id="formPin">
+      <svg viewBox="0 0 56 72" aria-hidden="true"><path d="M28 2C13 10 6 26 8 42c2 15 10 26 20 28 10-2 18-13 20-28 2-16-5-32-20-40z" fill="#E0A526"/><path d="M28 6v62M18 12c-4 14-4 34 2 52M38 12c4 14 4 34-2 52" stroke="#3A2117" stroke-width="2.2" fill="none" stroke-opacity=".4"/></svg>
+      <h1>Ingresar al panel</h1>
+      <p class="sub">Escriba el PIN de la finca.</p>
+      <label for="pin">PIN</label>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+      <button class="btn prim" type="submit" id="btnEntrar">Entrar</button>
+      <p class="msg" id="msgPin" role="alert"></p>
+    </form>
+  </div>
 
   <!-- Paso 2: escribir lo que pasó y confirmar. / Step 2: write what happened and confirm. -->
   <section id="panel" hidden>
-    <form id="formTexto">
-      <label for="texto">¿Qué pasó hoy?</label>
-      <p class="ayuda">Por ejemplo: «hoy hice 10 tabletas de 70 %» o «vendí 2 pastas a doña María».</p>
+    <form class="tarjeta" id="formTexto">
+      <h2><label for="texto">¿Qué pasó hoy?</label></h2>
+      <p class="ayuda">Escríbalo con sus palabras. Por ejemplo: «hoy hice 10 tabletas de 70 %» o «vendí 2 pastas a doña María».</p>
       <textarea id="texto" required maxlength="1000"></textarea>
       <button class="btn prim" type="submit" id="btnInterpretar">Revisar cambios</button>
     </form>
 
-    <div id="propuesta" hidden>
+    <div class="tarjeta" id="propuesta" hidden>
       <h2>Esto es lo que entendí</h2>
       <ul class="cambios" id="listaCambios"></ul>
-      <button class="btn prim" id="btnGuardar">Guardar cambios</button>
-      <button class="btn sec" id="btnDescartar">Descartar</button>
+      <div class="acciones">
+        <button class="btn prim" id="btnGuardar">Guardar cambios</button>
+        <button class="btn sec" id="btnDescartar">Descartar</button>
+      </div>
     </div>
     <p class="msg" id="msg" role="alert"></p>
 
-    <h2>Existencias actuales</h2>
-    <table>
-      <thead><tr><th>Producto</th><th>Existencias</th></tr></thead>
-      <tbody id="tabla"></tbody>
-    </table>
+    <div class="tarjeta">
+      <h2>Existencias actuales</h2>
+      <table>
+        <thead><tr><th scope="col">Producto</th><th scope="col">Existencias</th></tr></thead>
+        <tbody id="tabla"></tbody>
+      </table>
+    </div>
   </section>
 </main>
 
@@ -88,14 +171,34 @@
     return data;
   }
 
-  // Muestra la tabla de existencias. / Shows the stock table.
+  // Marca un botón como ocupado mientras se espera al servidor.
+  // Marks a button as busy while waiting for the server.
+  function ocupado(btn, si) {
+    btn.disabled = si;
+    btn.classList.toggle('cargando', si);
+    btn.setAttribute('aria-busy', String(si));
+  }
+
+  // Muestra un mensaje de estado; tipo puede ser 'ok', 'error' o vacío.
+  // Shows a status message; type can be 'ok', 'error' or empty.
+  function aviso(texto, tipo = '') {
+    $('msg').className = 'msg' + (tipo ? ' ' + tipo : '');
+    $('msg').textContent = texto;
+  }
+
+  // Muestra la tabla de existencias, resaltando los productos en 0.
+  // Shows the stock table, highlighting products at 0.
   function pintarTabla() {
     $('tabla').innerHTML = '';
     productos.forEach(p => {
+      const cero = Number(p.existencias) <= 0;
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td></td><td></td>';
-      tr.cells[0].textContent = `${p.nombre} (${p.presentacion})`;
+      if (cero) tr.className = 'cero';
+      tr.innerHTML = '<td><span class="nom"></span><span class="pres"></span></td><td class="num"></td>';
+      tr.querySelector('.nom').textContent = p.nombre;
+      tr.querySelector('.pres').textContent = p.presentacion;
       tr.cells[1].textContent = p.existencias;
+      if (cero) tr.cells[1].insertAdjacentHTML('beforeend', '<span class="agotado">Agotado</span>');
       $('tabla').appendChild(tr);
     });
   }
@@ -113,47 +216,63 @@
   $('formPin').onsubmit = async e => {
     e.preventDefault();
     pin = $('pin').value;
-    $('msgPin').textContent = 'Verificando…';
+    $('msgPin').className = 'msg';
+    $('msgPin').textContent = '';
+    ocupado($('btnEntrar'), true);
     try {
       productos = (await api({ action: 'login' })).products;
-      $('formPin').hidden = true; $('panel').hidden = false;
+      $('login').hidden = true; $('panel').hidden = false;
       pintarTabla();
+      $('texto').focus();
     } catch (err) {
+      $('msgPin').className = 'msg error';
       $('msgPin').textContent = err.message === 'PIN incorrecto.' ? 'El PIN no es correcto.' : 'No se pudo conectar. Revise la conexión e intente de nuevo.';
-    }
+    } finally { ocupado($('btnEntrar'), false); }
   };
 
   // Pide a la IA que interprete el texto; todavía no se guarda nada.
   // Asks the AI to interpret the text; nothing is saved yet.
   $('formTexto').onsubmit = async e => {
     e.preventDefault();
-    $('btnInterpretar').disabled = true; $('msg').className = 'msg'; $('msg').textContent = 'Revisando…';
+    ocupado($('btnInterpretar'), true); aviso('');
     try {
       cambios = (await api({ action: 'parse', text: $('texto').value })).changes;
-      $('msg').textContent = '';
-      if (!cambios.length) { $('msg').textContent = 'No encontré productos ni cantidades en el mensaje. Intente escribirlo de otra forma.'; return; }
+      if (!cambios.length) { aviso('No encontré productos ni cantidades en el mensaje. Intente escribirlo de otra forma.', 'error'); return; }
       $('listaCambios').innerHTML = '';
-      cambios.forEach(c => { const li = document.createElement('li'); li.textContent = describir(c); $('listaCambios').appendChild(li); });
+      cambios.forEach(c => {
+        // Etiqueta visual "Producción" o "Venta" antes de la descripción.
+        // Visual "Producción" or "Venta" tag before the description.
+        const li = document.createElement('li');
+        const venta = c.tipo === 'venta';
+        li.className = venta ? 'venta' : 'produccion';
+        const tag = document.createElement('span');
+        tag.className = 'etiqueta';
+        tag.textContent = venta ? 'Venta' : 'Producción';
+        const txt = document.createElement('span');
+        txt.textContent = describir(c);
+        li.append(tag, txt);
+        $('listaCambios').appendChild(li);
+      });
       $('propuesta').hidden = false;
     } catch (err) {
-      $('msg').className = 'msg error'; $('msg').textContent = 'No se pudo revisar: ' + err.message;
-    } finally { $('btnInterpretar').disabled = false; }
+      aviso('No se pudo revisar: ' + err.message, 'error');
+    } finally { ocupado($('btnInterpretar'), false); }
   };
 
   // Guarda en la hoja solo lo que la persona confirmó. / Saves to the sheet only what the person confirmed.
   $('btnGuardar').onclick = async () => {
-    $('btnGuardar').disabled = true;
+    ocupado($('btnGuardar'), true);
     try {
       productos = (await api({ action: 'apply', changes: cambios })).products;
       pintarTabla();
       $('propuesta').hidden = true; $('texto').value = '';
-      $('msg').className = 'msg'; $('msg').textContent = 'Cambios guardados.';
+      aviso('Cambios guardados.', 'ok');
     } catch (err) {
-      $('msg').className = 'msg error'; $('msg').textContent = 'No se guardó nada: ' + err.message;
-    } finally { $('btnGuardar').disabled = false; }
+      aviso('No se guardó nada: ' + err.message, 'error');
+    } finally { ocupado($('btnGuardar'), false); }
   };
 
-  $('btnDescartar').onclick = () => { cambios = []; $('propuesta').hidden = true; $('msg').textContent = 'Cambios descartados.'; };
+  $('btnDescartar').onclick = () => { cambios = []; $('propuesta').hidden = true; aviso('Cambios descartados.'); };
 </script>
 </body>
 </html>
