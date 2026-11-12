@@ -1,106 +1,225 @@
 <!DOCTYPE html>
 <!--
-  CATÁLOGO WEB DE FINCA BORNET CON ASISTENTE DE IA Y PEDIDOS POR WHATSAPP
-  FINCA BORNET WEB CATALOG WITH AI ASSISTANT AND WHATSAPP ORDERS
+  CATÁLOGO WEB DE FINCA BORNET CON ASISTENTE DE IA Y PEDIDOS POR WHATSAPP (DISEÑO "ENVOLTURA ARTESANAL")
+  FINCA BORNET WEB CATALOG WITH AI ASSISTANT AND WHATSAPP ORDERS ("HANDMADE WRAPPER" DESIGN)
 -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Finca Bornet | Cacao orgánico de Guatuso</title>
 <meta name="description" content="Catálogo de productos de cacao orgánico de Finca Bornet, Guatuso, Costa Rica.">
+<meta name="theme-color" content="#3A2117">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Young+Serif&display=swap" rel="stylesheet">
 <style>
-  /* Paleta tomada del cacao: grano, mazorca madura, hoja y pulpa. */
-  /* Palette taken from cacao: bean, ripe pod, leaf and pulp. */
+  /* Paleta del cacao: grano, mazorca madura, hoja, mazorca morada, pulpa y papel de envoltura. */
+  /* Cacao palette: bean, ripe pod, leaf, purple pod, pulp and wrapping paper. */
   :root {
-    --cacao: #3A2117; --cacao-soft: #6B4A3A; --mazorca: #E0A526;
-    --hoja: #2E5E3A; --pulpa: #FFFDF8; --linea: #E8E0D6;
+    --cacao: #3A2117; --cacao-2: #5A3A2C; --mazorca: #E0A526; --hoja: #2E5E3A; --hoja-osc: #234A2D;
+    --morada: #7A2E3B; --pulpa: #FFFDF8; --papel: #F3E9DC; --linea: #E6D9C8;
     --display: "Young Serif", Georgia, serif;
-    --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --barra: 5.25rem;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--pulpa); color: var(--cacao); font: 16px/1.5 var(--body); }
-  :focus-visible { outline: 3px solid var(--mazorca); outline-offset: 2px; }
-  button { font: inherit; cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: .4; }
   [hidden] { display: none !important; }
-
-  /* Encabezado: el único elemento llamativo de la página. */
-  /* Header: the only eye-catching element on the page. */
-  header { background: var(--cacao); color: var(--pulpa); padding: 2.5rem 1.25rem 2rem; }
-  header .wrap { display: flex; gap: 1rem; align-items: center; }
-  header svg { flex: none; width: 56px; height: 72px; }
-  header h1 { font: 2.6rem/1 var(--display); color: var(--mazorca); margin: 0 0 .4rem; }
-  header p { margin: 0; max-width: 32ch; opacity: .9; }
-
-  .wrap { max-width: 640px; margin: 0 auto; }
-  main { padding: 1.25rem 1.25rem 9rem; }
-  h2 { font: 1.4rem/1.2 var(--display); margin: 1.5rem 0 .5rem; }
-
-  /* Lista de productos. / Product list. */
-  .producto { display: grid; grid-template-columns: 72px 1fr; gap: .9rem; padding: 1rem 0; border-bottom: 1px solid var(--linea); }
-  .foto { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: #F1E7DA; display: grid; place-items: center; }
-  .producto h3 { font: 1.1rem/1.25 var(--display); margin: 0; }
-  .pres { color: var(--cacao-soft); font-size: .9rem; }
-  .desc { margin: .3rem 0 .5rem; font-size: .95rem; }
-  .fila { display: flex; justify-content: space-between; align-items: center; gap: .5rem; flex-wrap: wrap; }
-  .precio { font-weight: 700; font-size: 1.05rem; }
-  .agotado { color: var(--cacao-soft); font-size: .9rem; }
-  .stepper { display: flex; align-items: center; border: 1px solid var(--linea); border-radius: 999px; }
-  .stepper button { width: 2.5rem; height: 2.5rem; border: 0; background: none; color: var(--cacao); font-size: 1.25rem; }
-  .stepper output { min-width: 1.5rem; text-align: center; font-weight: 700; }
-
-  .info p { margin: .25rem 0 .75rem; }
-  .estado { padding: 2rem 0; text-align: center; color: var(--cacao-soft); }
-  .estado button { margin-top: .75rem; }
-
-  /* Barra inferior del pedido (solo con productos) y botón flotante del asistente. */
-  /* Bottom order bar (only with products) and floating assistant button. */
-  .barra { position: fixed; inset: auto 0 0; background: var(--pulpa); border-top: 1px solid var(--linea); padding: .75rem 1.25rem; }
-  .btn-preguntar { position: fixed; right: 1.25rem; bottom: 1.25rem; box-shadow: 0 2px 8px rgb(58 33 23 / .25); }
-  body.con-pedido .btn-preguntar { bottom: 5.5rem; }
-  .barra .wrap { display: flex; gap: .75rem; align-items: center; justify-content: space-between; }
-  .total { font-size: .95rem; }
-  .total strong { display: block; font-size: 1.15rem; }
-  .btn { border: 0; border-radius: 999px; padding: .75rem 1.25rem; font-weight: 700; }
-  .btn-pedir { background: var(--hoja); color: #fff; }
-  .btn-preguntar { background: var(--mazorca); color: var(--cacao); }
-  .btn-sec { background: none; border: 1px solid var(--cacao); color: var(--cacao); }
-
-  /* Panel del asistente. / Assistant panel. */
-  dialog { border: 0; padding: 0; width: min(640px, 100%); max-height: 85vh; margin: auto auto 0; border-radius: 16px 16px 0 0; background: var(--pulpa); color: var(--cacao); }
-  dialog::backdrop { background: rgb(58 33 23 / .45); }
-  .chat { display: flex; flex-direction: column; height: min(85vh, 620px); }
-  .chat-head { display: flex; justify-content: space-between; align-items: start; padding: 1rem 1.25rem .5rem; }
-  .chat-head h2 { margin: 0; }
-  .chat-head small { color: var(--cacao-soft); }
-  .cerrar { border: 0; background: none; font-size: 1.5rem; color: var(--cacao); }
-  .mensajes { flex: 1; overflow-y: auto; padding: .5rem 1.25rem; display: flex; flex-direction: column; gap: .5rem; }
-  .msg { max-width: 85%; padding: .6rem .85rem; border-radius: 14px; white-space: pre-wrap; }
-  .msg.bot { background: #F1E7DA; align-self: flex-start; }
-  .msg.user { background: var(--cacao); color: var(--pulpa); align-self: flex-end; }
-  .sugerencias { display: flex; gap: .5rem; flex-wrap: wrap; padding: 0 1.25rem .5rem; }
-  .sugerencias button { border: 1px solid var(--linea); background: #fff; border-radius: 999px; padding: .35rem .8rem; font-size: .9rem; color: var(--cacao); }
-  .chat form { display: flex; gap: .5rem; padding: .75rem 1.25rem 1rem; border-top: 1px solid var(--linea); }
-  .chat input { flex: 1; min-width: 0; border: 1px solid var(--linea); border-radius: 999px; padding: .7rem 1rem; font: inherit; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    dialog[open] { animation: subir .2s ease-out; }
-    @keyframes subir { from { transform: translateY(30px); opacity: 0; } }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; color: var(--cacao); font: 17px/1.55 var(--body); background-color: var(--pulpa);
+    /* Mazorcas a línea muy tenues como textura de fondo. / Very faint line-drawn pods as background texture. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%233A2117' stroke-opacity='.05' stroke-width='1.5'%3E%3Cpath d='M40 18c-11 6-16 18-15 30 1 11 7 19 15 21 8-2 14-10 15-21 1-12-4-24-15-30z'/%3E%3Cpath d='M40 21v46M33 25c-3 10-3 25 1 38M47 25c3 10 3 25-1 38'/%3E%3Cpath d='M118 92c-11 6-16 18-15 30 1 11 7 19 15 21 8-2 14-10 15-21 1-12-4-24-15-30z' transform='rotate(24 118 118)'/%3E%3C/g%3E%3C/svg%3E");
   }
+  img { max-width: 100%; display: block; }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: .4; }
+  :focus-visible { outline: 3px solid var(--cacao); outline-offset: 3px; }
+  .oscuro :focus-visible { outline-color: var(--mazorca); }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* ---------- PORTADA / HERO ---------- */
+  .portada {
+    position: relative; color: var(--pulpa); background-color: var(--cacao);
+    /* Vetas de chocolate en SVG. / Chocolate swirls in SVG. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120'%3E%3Cg fill='none' stroke='%23E0A526' stroke-opacity='.09' stroke-width='2'%3E%3Cpath d='M0 20c40-18 80 18 120 0s80-18 120 0'/%3E%3Cpath d='M0 50c40-18 80 18 120 0s80-18 120 0'/%3E%3Cpath d='M0 80c40-18 80 18 120 0s80-18 120 0'/%3E%3Cpath d='M0 110c40-18 80 18 120 0s80-18 120 0'/%3E%3C/g%3E%3C/svg%3E");
+    padding: 3rem 0 4rem;
+  }
+  /* Borde dentado como el sellado de una envoltura. / Serrated edge like a wrapper seal. */
+  .portada::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -11px; height: 12px;
+    background: linear-gradient(135deg, var(--cacao) 50%, transparent 50%) 0 0 / 16px 12px repeat-x,
+                linear-gradient(225deg, var(--cacao) 50%, transparent 50%) 0 0 / 16px 12px repeat-x;
+  }
+  .portada .wrap { display: grid; gap: 1.5rem; align-items: center; }
+  .portada svg.mazorca { width: 84px; height: auto; }
+  .portada h1 { font: clamp(3.1rem, 13vw, 6rem)/.95 var(--display); color: var(--mazorca); margin: 0; letter-spacing: -.01em; overflow-wrap: anywhere; }
+  .portada p { font-size: clamp(1.1rem, 3.6vw, 1.4rem); margin: .9rem 0 0; max-width: 30ch; color: var(--pulpa); }
+  @media (min-width: 768px) {
+    .portada { padding: 4.5rem 0 5.5rem; }
+    .portada .wrap { grid-template-columns: 1fr auto; }
+    .portada svg.mazorca { order: 2; width: 170px; transform: rotate(12deg); margin-right: 16px; }
+  }
+
+  main { padding: 3rem 0 calc(var(--barra) + 2.5rem); }
+  h2 { font: clamp(1.7rem, 5vw, 2.2rem)/1.15 var(--display); margin: 0 0 1.25rem; }
+
+  /* ---------- PRODUCTOS / PRODUCTS ---------- */
+  .grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+  @media (min-width: 600px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .tarjeta {
+    display: flex; flex-direction: column; background: #fff; border: 1px solid var(--linea); border-radius: 16px;
+    box-shadow: 0 14px 28px -24px rgb(58 33 23 / .55); transition: border-color .15s, box-shadow .15s;
+  }
+  .tarjeta.en-pedido { border-color: var(--hoja); box-shadow: 0 0 0 2px var(--hoja); }
+  .media { position: relative; aspect-ratio: 4 / 3; border-radius: 15px 15px 0 0; overflow: hidden; }
+  .media img { width: 100%; height: 100%; object-fit: cover; }
+  /* Sustituto ilustrado: papel de envoltura con granos y una mazorca. */
+  /* Illustrated substitute: wrapping paper with beans and a pod. */
+  .sustituto {
+    width: 100%; height: 100%; display: grid; place-items: center; background-color: var(--tono, var(--cacao));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='%23FFFDF8' fill-opacity='.07'%3E%3Cellipse cx='14' cy='14' rx='6' ry='9' transform='rotate(-30 14 14)'/%3E%3Cellipse cx='42' cy='42' rx='6' ry='9' transform='rotate(30 42 42)'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .sustituto svg { width: 34%; max-width: 120px; height: auto; transform: rotate(-14deg); }
+  .tono-0 { --tono: var(--cacao); } .tono-1 { --tono: var(--hoja); } .tono-2 { --tono: var(--morada); }
+  /* La faja: etiqueta de papel con el extremo cortado en V. / The band: paper label with a V-cut end. */
+  .faja {
+    position: absolute; left: 0; bottom: 1rem; max-width: 85%; background: var(--papel); color: var(--cacao);
+    padding: .4rem 1.6rem .4rem 1rem; font-weight: 600; font-size: .95rem;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 50%, 100% 100%, 0 100%);
+    box-shadow: 0 2px 0 rgb(58 33 23 / .15);
+  }
+  .sello {
+    position: absolute; top: .9rem; right: .9rem; background: var(--morada); color: var(--pulpa);
+    padding: .35rem .75rem; border-radius: 6px; font-weight: 700; font-size: .9rem; transform: rotate(4deg);
+    border: 2px dashed rgb(255 253 248 / .55); outline: 3px solid var(--morada);
+  }
+  .cuerpo { padding: 1.1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+  .tarjeta h3 { font: 1.4rem/1.2 var(--display); margin: 0; overflow-wrap: anywhere; hyphens: auto; text-wrap: pretty; }
+  .desc { margin: 0; color: var(--cacao-2); text-wrap: pretty; }
+  .pie-tarjeta { margin-top: auto; padding-top: .9rem; display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+  .precio { font: 1.5rem/1 var(--display); }
+  .encargo { color: var(--morada); font-weight: 600; font-size: .95rem; max-width: 18ch; text-align: right; }
+  .stepper { display: flex; align-items: center; gap: .35rem; }
+  .stepper button {
+    width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--cacao); background: var(--papel);
+    font-size: 1.5rem; line-height: 1; display: grid; place-items: center;
+  }
+  .stepper button.mas { background: var(--cacao); color: var(--pulpa); }
+  .stepper output { min-width: 2.2rem; text-align: center; font-weight: 700; font-size: 1.2rem; }
+
+  /* Esqueleto de carga. / Loading skeleton. */
+  .esqueleto .media, .esqueleto .linea-esq { background: var(--papel); }
+  .linea-esq { height: 1rem; border-radius: 6px; }
+  .linea-esq.t { height: 1.5rem; width: 70%; }
+  .linea-esq.c { width: 45%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .esqueleto .media, .esqueleto .linea-esq {
+      background: linear-gradient(90deg, var(--papel) 0%, #FBF5EC 50%, var(--papel) 100%) 0 0 / 200% 100%;
+      animation: brillo 1.4s linear infinite;
+    }
+    @keyframes brillo { to { background-position: -200% 0; } }
+  }
+
+  /* Error amable. / Friendly error. */
+  .aviso { grid-column: 1 / -1; text-align: center; padding: 2.5rem 1.25rem; background: var(--papel); border-radius: 16px; }
+  .aviso svg { width: 64px; height: auto; margin: 0 auto 1rem; display: block; }
+  .aviso h3 { font: 1.4rem/1.2 var(--display); margin: 0 0 .4rem; }
+  .aviso p { margin: 0 auto 1.25rem; max-width: 40ch; color: var(--cacao-2); }
+
+  /* ---------- PAGO Y RETIRO / PAYMENT AND PICKUP ---------- */
+  .info { margin-top: 3.5rem; }
+  .info-grid { display: grid; gap: 1rem; }
+  @media (min-width: 600px) { .info-grid { grid-template-columns: 1fr 1fr; } }
+  .info-tarjeta { display: grid; grid-template-columns: 52px 1fr; gap: 1rem; align-items: start; background: var(--papel); border-radius: 16px; padding: 1.25rem; }
+  .icono { width: 52px; height: 52px; border-radius: 50%; background: var(--cacao); display: grid; place-items: center; }
+  .icono svg { width: 26px; height: 26px; }
+  .info-tarjeta h3 { font: 1.2rem/1.2 var(--display); margin: .2rem 0 .3rem; }
+  .info-tarjeta p { margin: 0; color: var(--cacao-2); }
+
+  /* ---------- PIE / FOOTER ---------- */
+  footer { background: var(--cacao); color: var(--pulpa); padding: 2rem 0 calc(var(--barra) + 2rem); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; justify-content: space-between; }
+  footer strong { font: 1.4rem/1 var(--display); color: var(--mazorca); font-weight: 400; }
+  footer a { color: var(--pulpa); text-underline-offset: 4px; display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* ---------- BOTONES / BUTTONS ---------- */
+  .btn { border: 0; border-radius: 999px; min-height: 48px; padding: .7rem 1.3rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; }
+  .btn svg { width: 22px; height: 22px; flex: none; }
+  .btn-pedir { background: var(--hoja); color: #fff; }
+  .btn-pedir:hover { background: var(--hoja-osc); }
+  .btn-preguntar { background: var(--mazorca); color: var(--cacao); }
+  .btn-sec { background: var(--pulpa); border: 2px solid var(--cacao); color: var(--cacao); }
+
+  /* ---------- BARRA INFERIOR / BOTTOM BAR ---------- */
+  .barra {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--pulpa); border-top: 1px solid var(--linea);
+    box-shadow: 0 -10px 24px -20px rgb(58 33 23 / .6); padding: .7rem 0 calc(.7rem + env(safe-area-inset-bottom));
+  }
+  .barra .wrap { display: flex; align-items: center; gap: .75rem; }
+  .barra .invitacion { flex: 1; font-weight: 600; color: var(--cacao-2); }
+  .barra .btn-pedir { flex: 1; flex-direction: column; gap: 0; line-height: 1.2; padding-block: .45rem; border-radius: 16px; }
+  .barra .btn-pedir span { display: flex; align-items: center; gap: .45rem; }
+  .barra .btn-pedir small { font-weight: 600; font-size: .9rem; opacity: .95; }
+  .barra .icon-only { width: 52px; padding: 0; flex: none; }
+  @media (min-width: 768px) { .barra .btn-pedir { flex: 0 1 auto; min-width: 300px; margin-left: auto; } }
+
+  /* ---------- ASISTENTE / ASSISTANT ---------- */
+  dialog {
+    border: 0; padding: 0; width: 100%; max-width: 100%; max-height: 88dvh; margin: auto 0 0; border-radius: 20px 20px 0 0;
+    background: var(--pulpa); color: var(--cacao); box-shadow: 0 -12px 40px rgb(58 33 23 / .3);
+  }
+  @media (min-width: 768px) {
+    dialog { width: 420px; margin: auto 1.5rem 1.5rem auto; border-radius: 20px; }
+  }
+  dialog::backdrop { background: rgb(58 33 23 / .5); }
+  .chat { display: flex; flex-direction: column; height: min(88dvh, 640px); }
+  .chat-head { display: flex; gap: .75rem; align-items: center; padding: 1rem 1rem .75rem 1.25rem; background: var(--cacao); color: var(--pulpa); border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--mazorca); display: grid; place-items: center; flex: none; }
+  .avatar svg { width: 20px; height: auto; }
+  .chat-head h2 { font-size: 1.2rem; margin: 0; color: var(--pulpa); }
+  .chat-head small { display: block; opacity: .9; font-size: .85rem; line-height: 1.35; }
+  .cerrar { margin-left: auto; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgb(255 253 248 / .12); color: var(--pulpa); font-size: 1.6rem; line-height: 1; flex: none; }
+  .mensajes { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: .6rem; }
+  .msg { max-width: 85%; padding: .65rem .95rem; border-radius: 18px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.bot { background: var(--papel); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.user { background: var(--cacao); color: var(--pulpa); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .escribiendo { display: inline-flex; gap: .3rem; padding: .85rem 1rem; }
+  .escribiendo i { width: 8px; height: 8px; border-radius: 50%; background: var(--cacao-2); opacity: .5; }
+  @media (prefers-reduced-motion: no-preference) {
+    .escribiendo i { animation: punto 1s infinite; }
+    .escribiendo i:nth-child(2) { animation-delay: .15s; } .escribiendo i:nth-child(3) { animation-delay: .3s; }
+    @keyframes punto { 50% { opacity: 1; transform: translateY(-3px); } }
+    dialog[open] { animation: subir .22s ease-out; }
+    @keyframes subir { from { transform: translateY(24px); opacity: 0; } }
+  }
+  .sugerencias { display: flex; gap: .5rem; flex-wrap: wrap; padding: 0 1.25rem .75rem; }
+  .sugerencias button { min-height: 44px; border: 2px solid var(--mazorca); background: #fff; border-radius: 999px; padding: .4rem 1rem; font-weight: 600; text-align: left; }
+  .chat form { display: flex; gap: .5rem; padding: .75rem 1rem calc(1rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--linea); }
+  .chat input { flex: 1; min-width: 0; min-height: 48px; border: 2px solid var(--linea); border-radius: 999px; padding: .6rem 1.1rem; background: #fff; }
+  .chat input:focus-visible { border-color: var(--cacao); outline-offset: 1px; }
+  .chat .btn-pedir { width: 52px; padding: 0; flex: none; }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .tarjeta { transition: none; } }
 </style>
 </head>
 <body>
-<header>
+<!-- Íconos reutilizables. / Reusable icons. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mazorca" viewBox="0 0 56 72"><path d="M28 2C13 10 6 26 8 42c2 15 10 26 20 28 10-2 18-13 20-28 2-16-5-32-20-40z"/><path d="M28 6v62M18 12c-4 14-4 34 2 52M38 12c4 14 4 34-2 52" fill="none" stroke="currentColor" stroke-width="2.2" stroke-opacity=".4"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-enviar" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pago" viewBox="0 0 24 24"><g fill="none" stroke="#E0A526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 18h4M9.5 10.5l2 2 3.5-4"/></g></symbol>
+  <symbol id="i-retiro" viewBox="0 0 24 24"><g fill="none" stroke="#E0A526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></g></symbol>
+</svg>
+
+<header class="portada oscuro">
   <div class="wrap">
-    <!-- Mazorca de cacao dibujada a mano en SVG. / Hand-drawn cacao pod in SVG. -->
-    <svg viewBox="0 0 56 72" aria-hidden="true">
-      <path d="M28 2C13 10 6 26 8 42c2 15 10 26 20 28 10-2 18-13 20-28 2-16-5-32-20-40z" fill="#E0A526"/>
-      <path d="M28 6v62M18 12c-4 14-4 34 2 52M38 12c4 14 4 34-2 52" stroke="#3A2117" stroke-width="2" fill="none" opacity=".35"/>
-    </svg>
+    <svg class="mazorca" viewBox="0 0 56 72" fill="#E0A526" color="#3A2117" aria-hidden="true"><use href="#i-mazorca"/></svg>
     <div>
       <h1 id="nombre">Finca Bornet</h1>
       <p id="lema">Cacao orgánico de Guatuso, hecho a mano por la familia</p>
@@ -109,26 +228,49 @@
 </header>
 
 <main class="wrap">
-  <h2>Productos</h2>
-  <div id="productos"><p class="estado">Cargando el catálogo…</p></div>
-  <section class="info" id="info" hidden>
-    <h2>Pago y retiro</h2>
-    <p id="pago"></p>
-    <p id="retiro"></p>
+  <h2 id="tituloProductos">Productos</h2>
+  <div class="grid" id="productos" aria-labelledby="tituloProductos" aria-live="polite"></div>
+
+  <section class="info" id="info" aria-labelledby="tituloInfo" hidden>
+    <h2 id="tituloInfo">Pago y retiro</h2>
+    <div class="info-grid">
+      <article class="info-tarjeta">
+        <div class="icono" aria-hidden="true"><svg><use href="#i-pago"/></svg></div>
+        <div><h3>Pago</h3><p id="pago"></p></div>
+      </article>
+      <article class="info-tarjeta">
+        <div class="icono" aria-hidden="true"><svg><use href="#i-retiro"/></svg></div>
+        <div><h3>Retiro</h3><p id="retiro"></p></div>
+      </article>
+    </div>
   </section>
 </main>
 
-<button class="btn btn-preguntar" id="abrirChat">Preguntar</button>
-<div class="barra" id="barra" hidden>
+<footer class="oscuro">
   <div class="wrap">
-    <div class="total" id="total" aria-live="polite"></div>
-    <button class="btn btn-pedir" id="pedir">Pedir por WhatsApp</button>
+    <strong id="pieNombre">Finca Bornet</strong>
+    <a id="pieWhatsapp" href="#" hidden>Escríbanos por WhatsApp</a>
+  </div>
+</footer>
+
+<!-- Barra fija: invitación al asistente o resumen del pedido. / Fixed bar: assistant invitation or order summary. -->
+<div class="barra" id="barra">
+  <div class="wrap">
+    <span class="invitacion" id="invitacion">¿Tiene dudas sobre algún producto?</span>
+    <button class="btn btn-preguntar" id="abrirChat" aria-label="Preguntar al asistente">
+      <svg aria-hidden="true"><use href="#i-chat"/></svg><span id="txtPreguntar">Preguntar</span>
+    </button>
+    <button class="btn btn-pedir" id="pedir" hidden>
+      <span>Pedir por WhatsApp</span>
+      <small id="resumen" aria-live="polite"></small>
+    </button>
   </div>
 </div>
 
 <dialog id="dialogo" aria-labelledby="tituloChat">
   <div class="chat">
-    <div class="chat-head">
+    <div class="chat-head oscuro">
+      <div class="avatar" aria-hidden="true"><svg viewBox="0 0 56 72" fill="#3A2117" color="#E0A526"><use href="#i-mazorca"/></svg></div>
       <div>
         <h2 id="tituloChat">Preguntas sobre los productos</h2>
         <small>Asistente automático. Puede equivocarse; confirme su pedido por WhatsApp.</small>
@@ -143,7 +285,7 @@
     </div>
     <form id="formChat">
       <input id="entrada" autocomplete="off" placeholder="Escriba su pregunta" aria-label="Su pregunta" maxlength="500">
-      <button class="btn btn-pedir" type="submit">Enviar</button>
+      <button class="btn btn-pedir" type="submit" aria-label="Enviar pregunta"><svg aria-hidden="true"><use href="#i-enviar"/></svg></button>
     </form>
   </div>
 </dialog>
@@ -157,61 +299,89 @@
   const colones = n => '₡' + Number(n).toLocaleString('es-CR');
   let productos = [], info = {}, carrito = {}, historial = [];
 
+  // Tarjeta de esqueleto mientras carga. / Skeleton card while loading.
+  const ESQUELETO = '<div class="tarjeta esqueleto" aria-hidden="true"><div class="media"></div><div class="cuerpo"><div class="linea-esq t"></div><div class="linea-esq"></div><div class="linea-esq c"></div></div></div>';
+
   // Carga productos e información del negocio desde la hoja.
   // Loads products and business info from the sheet.
   async function cargar() {
-    $('productos').innerHTML = '<p class="estado">Cargando el catálogo…</p>';
+    const cont = $('productos');
+    cont.setAttribute('aria-busy', 'true');
+    cont.innerHTML = '<p class="vh">Cargando productos…</p>' + ESQUELETO.repeat(3);
     try {
       const data = await (await fetch(API_URL)).json();
       if (data.error) throw new Error(data.error);
       productos = data.products; info = data.info;
       pintarInfo(); pintarProductos();
     } catch (e) {
-      $('productos').innerHTML = '<div class="estado"><p>No se pudo cargar el catálogo. Revise su conexión e intente de nuevo.</p><button class="btn btn-sec" onclick="cargar()">Intentar de nuevo</button></div>';
+      cont.innerHTML = `<div class="aviso">
+        <svg viewBox="0 0 56 72" fill="#C9B29A" color="#3A2117" aria-hidden="true"><use href="#i-mazorca"/></svg>
+        <h3>No se pudo cargar el catálogo</h3>
+        <p>Puede ser la conexión a internet. Intente de nuevo en un momento o escríbanos por WhatsApp.</p>
+        <button class="btn btn-sec" onclick="cargar()">Intentar de nuevo</button></div>`;
+    } finally {
+      cont.removeAttribute('aria-busy');
     }
   }
 
-  // Muestra nombre, lema, pago y retiro tomados de la pestaña Info.
-  // Shows name, tagline, payment and pickup taken from the Info tab.
+  // Muestra nombre, lema, pago, retiro y el enlace del pie tomados de la pestaña Info.
+  // Shows name, tagline, payment, pickup and the footer link taken from the Info tab.
   function pintarInfo() {
-    if (info.nombre) $('nombre').textContent = info.nombre;
+    if (info.nombre) { $('nombre').textContent = info.nombre; $('pieNombre').textContent = info.nombre; }
     if (info.lema) $('lema').textContent = info.lema;
     $('pago').textContent = info.pago || '';
     $('retiro').textContent = info.retiro || '';
     $('info').hidden = false;
+    if (info.whatsapp) { $('pieWhatsapp').href = `https://wa.me/${info.whatsapp}`; $('pieWhatsapp').hidden = false; }
   }
 
-  // Dibuja la lista de productos con su selector de cantidad.
-  // Renders the product list with its quantity selector.
+  // Elige uno de tres tonos de envoltura a partir del id (siempre el mismo para cada producto).
+  // Picks one of three wrapper tones from the id (always the same for each product).
+  const tono = id => [...String(id)].reduce((s, c) => s + c.charCodeAt(0), 0) % 3;
+
+  // Dibuja las tarjetas de producto con su selector de cantidad.
+  // Renders the product cards with their quantity selector.
   function pintarProductos() {
     const cont = $('productos');
     cont.innerHTML = '';
     productos.forEach(p => {
       const stock = Number(p.existencias);
       const el = document.createElement('article');
-      el.className = 'producto';
+      el.className = 'tarjeta';
       el.innerHTML = `
-        ${p.imagen ? '<img class="foto" alt="" loading="lazy">' : '<div class="foto" aria-hidden="true"><svg width="30" height="38" viewBox="0 0 56 72"><path d="M28 2C13 10 6 26 8 42c2 15 10 26 20 28 10-2 18-13 20-28 2-16-5-32-20-40z" fill="#C9B29A"/></svg></div>'}
-        <div>
-          <h3></h3><div class="pres"></div><p class="desc"></p>
-          <div class="fila">
+        <div class="media">
+          ${p.imagen ? '<img alt="" loading="lazy">'
+            : `<div class="sustituto tono-${tono(p.id)}" aria-hidden="true"><svg viewBox="0 0 56 72" fill="#E0A526" color="#3A2117"><use href="#i-mazorca"/></svg></div>`}
+          <span class="faja"></span>
+          ${stock > 0 ? '' : '<span class="sello">Agotado · por encargo</span>'}
+        </div>
+        <div class="cuerpo">
+          <h3></h3>
+          <p class="desc"></p>
+          <div class="pie-tarjeta">
             <span class="precio"></span>
             ${stock > 0
-              ? `<div class="stepper"><button aria-label="Quitar uno">−</button><output>0</output><button aria-label="Agregar uno">+</button></div>`
-              : '<span class="agotado">Agotado. Se elabora por encargo.</span>'}
+              ? '<div class="stepper"><button class="menos" aria-label="Quitar uno">−</button><output aria-live="polite">0</output><button class="mas" aria-label="Agregar uno">+</button></div>'
+              : '<span class="encargo">Se elabora por encargo. Consulte por WhatsApp.</span>'}
           </div>
         </div>`;
       // Texto con textContent para no interpretar HTML de la hoja.
       // Text set with textContent so sheet content is never parsed as HTML.
       if (p.imagen) el.querySelector('img').src = p.imagen;
       el.querySelector('h3').textContent = p.nombre;
-      el.querySelector('.pres').textContent = p.presentacion;
+      el.querySelector('.faja').textContent = p.presentacion;
       el.querySelector('.desc').textContent = p.descripcion;
       el.querySelector('.precio').textContent = colones(p.precio);
       if (stock > 0) {
-        const [menos, mas] = el.querySelectorAll('.stepper button');
+        const menos = el.querySelector('.menos'), mas = el.querySelector('.mas');
         const out = el.querySelector('output');
-        const set = n => { carrito[p.id] = n; out.textContent = n; menos.disabled = n === 0; mas.disabled = n >= stock; actualizarTotal(); };
+        menos.setAttribute('aria-label', `Quitar uno: ${p.nombre}`);
+        mas.setAttribute('aria-label', `Agregar uno: ${p.nombre}`);
+        const set = n => {
+          carrito[p.id] = n; out.textContent = n; menos.disabled = n === 0; mas.disabled = n >= stock;
+          el.classList.toggle('en-pedido', n > 0);
+          actualizarTotal();
+        };
         menos.onclick = () => set((carrito[p.id] || 0) - 1);
         mas.onclick = () => set((carrito[p.id] || 0) + 1);
         set(carrito[p.id] || 0);
@@ -223,15 +393,18 @@
   // Lista de líneas del pedido actual. / List of lines in the current order.
   const lineas = () => productos.filter(p => carrito[p.id] > 0).map(p => ({ p, n: carrito[p.id] }));
 
-  // Actualiza la barra inferior con el total del pedido.
-  // Updates the bottom bar with the order total.
+  // Cambia la barra entre "invitación al asistente" y "resumen del pedido".
+  // Switches the bar between "assistant invitation" and "order summary".
   function actualizarTotal() {
     const l = lineas();
     const unidades = l.reduce((s, x) => s + x.n, 0);
     const total = l.reduce((s, x) => s + x.n * x.p.precio, 0);
-    $('barra').hidden = unidades === 0;
-    document.body.classList.toggle('con-pedido', unidades > 0);
-    $('total').innerHTML = `${unidades} ${unidades === 1 ? 'producto' : 'productos'}<strong>${colones(total)}</strong>`;
+    const hay = unidades > 0;
+    $('pedir').hidden = !hay;
+    $('invitacion').hidden = hay;
+    $('txtPreguntar').hidden = hay;
+    $('abrirChat').classList.toggle('icon-only', hay);
+    $('resumen').textContent = hay ? `${unidades} ${unidades === 1 ? 'producto' : 'productos'}, ${colones(total)}` : '';
   }
 
   // Abre WhatsApp con el pedido ya redactado.
@@ -265,19 +438,25 @@
     $('sugerencias').hidden = true;
     agregar('user', texto);
     historial.push({ role: 'user', text: texto });
-    const espera = agregar('bot', 'Escribiendo…');
+    // Indicador de "escribiendo" (marcado fijo, sin datos de la hoja).
+    // "Typing" indicator (fixed markup, no sheet data).
+    const espera = agregar('bot', '');
+    espera.classList.add('escribiendo');
+    espera.innerHTML = '<i></i><i></i><i></i><span class="vh">Escribiendo…</span>';
+    const responder = t => { espera.classList.remove('escribiendo'); espera.textContent = t; };
     try {
       const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'chat', messages: historial }) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      espera.textContent = data.reply;
+      responder(data.reply);
       historial.push({ role: 'model', text: data.reply });
     } catch (e) {
       // Si falla, se elimina la pregunta del historial para poder reintentarla.
       // On failure, the question is removed from history so it can be retried.
       historial.pop();
-      espera.textContent = 'No pude responder en este momento. Puede escribir directamente al WhatsApp del negocio.';
+      responder('No pude responder en este momento. Puede escribir directamente al WhatsApp del negocio.');
     }
+    $('mensajes').scrollTop = $('mensajes').scrollHeight;
   }
 
   $('abrirChat').onclick = () => {
